@@ -952,33 +952,37 @@ def main():
 
     if not args.files:
         return 0
-    
-    output = {}
-    entries_in_dict = 0
 
     with enable_sphinx_if_possible():
         status = 0
         pool = multiprocessing.Pool(multiprocessing.cpu_count())
-        if len(args.files) > 1:
-            results = pool.map(
-                _check_file,
-                [(name, args) for name in args.files])
-        else:
-            # This is for the case where we read from standard in.
-            results = [_check_file((args.files[0], args))]
+        try:
+            if len(args.files) > 1:
+                results = pool.map(
+                    _check_file,
+                    [(name, args) for name in args.files])
+            else:
+                # This is for the case where we read from standard in.
+                results = [_check_file((args.files[0], args))]
 
-        for (filename, errors) in results:
-            for error in errors:
-                line_number = error[0]
-                message = error[1]
+            for (filename, errors) in results:
+                for error in errors:
+                    line_number = error[0]
+                    message = error[1]
 
-                if not re.match(r'\([A-Z]+/[0-9]+\)', message):
-                    message = '(ERROR/3) ' + message
+                    if not re.match(r'\([A-Z]+/[0-9]+\)', message):
+                        message = '(ERROR/3) ' + message
 
-                output[entries_in_dict] = {'filename': filename, 'message':message, 'line_no':line_number}
-                entries_in_dict+=1
+                    output_message('{}:{}: {}'.format(filename,
+                                                      line_number,
+                                                      message))
 
-    return output
+                    status = 0
+        except (IOError, UnicodeError) as exception:
+            output_message(exception)
+            status = 1
+
+        return status
 
 
 
