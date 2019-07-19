@@ -954,7 +954,7 @@ def main():
         return 0
     
     output = {}
-    entries_in_dict = []
+    entries_in_dict = 0
 
     with enable_sphinx_if_possible():
         status = 0
@@ -975,11 +975,12 @@ def main():
 
                     if not re.match(r'\([A-Z]+/[0-9]+\)', message):
                         message = '(ERROR/3) ' + message
-                        
+
                     output[entries_in_dict] = {'filename': filename, 'message':message, 'line_no':line_number}
                     entries_in_dict+=1
 
-        return output
+    return output
+
 
 
 if __name__ == '__main__':
