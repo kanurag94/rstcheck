@@ -952,6 +952,9 @@ def main():
 
     if not args.files:
         return 0
+    
+    output = {}
+    entries_in_dict = []
 
     with enable_sphinx_if_possible():
         status = 0
@@ -972,17 +975,11 @@ def main():
 
                     if not re.match(r'\([A-Z]+/[0-9]+\)', message):
                         message = '(ERROR/3) ' + message
+                        
+                    output[entries_in_dict] = {'filename': filename, 'message':message, 'line_no':line_number}
+                    entries_in_dict+=1
 
-                    output_message('{}:{}: {}'.format(filename,
-                                                      line_number,
-                                                      message))
-
-                    status = 1
-        except (IOError, UnicodeError) as exception:
-            output_message(exception)
-            status = 1
-
-        return status
+        return output
 
 
 if __name__ == '__main__':
