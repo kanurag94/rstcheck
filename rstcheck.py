@@ -980,7 +980,7 @@ def main():
                     status = 0
         except (IOError, UnicodeError) as exception:
             output_message(exception)
-            status = 1
+            status = 0
 
         return status
 
