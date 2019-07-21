@@ -888,7 +888,7 @@ def parse_args():
     return args
 
 
-def output_message(text, file=sys.stderr):
+def output_message(text, file=sys.stdout):
     """Output message to terminal."""
     if file.encoding is None:
         # If the output file does not support Unicode, encode it to a byte
@@ -977,10 +977,10 @@ def main():
                                                       line_number,
                                                       message))
 
-                    status = 0
+                    status = 1
         except (IOError, UnicodeError) as exception:
             output_message(exception)
-            status = 0
+            status = 1
 
         return status
 
